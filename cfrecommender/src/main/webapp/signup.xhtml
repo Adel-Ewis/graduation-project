@@ -1,0 +1,132 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta charset="utf-8" />
+        <title>CFR - Sign Up</title>
+        <meta name="description" content="User login page" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <!-- bootstrap & fontawesome -->
+        <h:outputStylesheet name="css/bootstrap.css" />
+        <h:outputStylesheet name="css/font-awesome.css" />
+        <!-- text fonts -->
+        <h:outputStylesheet name="css/ace-fonts.css" />
+        <!-- ace styles -->
+        <h:outputStylesheet name="css/ace.css" />
+        <h:outputStylesheet name="css/ace-rtl.css" />
+    </h:head>
+    <h:body class="login-layout light-login">
+        <div class="main-container">
+            <div class="main-content">
+                <div class="row">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <div class="login-container">
+                            <div class="center">
+                                <h1>
+                                    <i class="ace-icon fa fa-fort-awesome blue"></i>
+                                    <span class="red">Code Forces</span>
+                                    <span class="blue" id="id-text2">Recommender</span>
+                                </h1>
+                                <h4 class="light" id="id-company-text">&copy; CFR</h4>
+                            </div>
+
+                            <div class="space-6"></div>
+
+                            <div class="position-relative">
+                                <div id="login-box" class="login-box visible widget-box no-border">
+                                    <div class="widget-body">
+                                        <div class="widget-main">
+                                            <h4 class="header green lighter bigger">
+                                                <i class="ace-icon fa fa-users blue"></i>
+                                                New User Registration
+                                            </h4>
+
+                                            <div class="space-6"></div>
+                                            <h:form>
+                                                <p:growl autoUpdate="true" />
+                                                <fieldset>
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:inputText type="email" value="#{backingSignup.userToRegister.systemUserEmail}" class="form-control" placeholder="Email" required="true" requiredMessage="Please Enter your Email" />
+                                                        </span>
+                                                    </label>
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:inputText type="text" value="#{backingSignup.userToRegister.systemUserFirstName}" class="form-control" placeholder="First Name" required="true" requiredMessage="Please Enter your First Name" />
+                                                        </span>
+                                                    </label>
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:inputText type="text" value="#{backingSignup.userToRegister.systemUserLastName}" class="form-control" placeholder="Last Name" required="true" requiredMessage="Please Enter your Last Name" />
+                                                        </span>
+                                                    </label>
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:inputText type="text" value="#{backingSignup.userToRegister.userName}" class="form-control" placeholder="Username" required="true" requiredMessage="Please Enter your Username" />
+                                                        </span>
+                                                    </label>
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:inputText type="text" value="#{backingSignup.codeforcesHandle}"  class="form-control" placeholder="Codeforces Handle" required="true" requiredMessage="Please Enter your Codeforces Handle" />
+                                                        </span>
+                                                    </label>
+
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:password id='pwd1' value="#{backingSignup.userToRegister.password}" match="pwd2" class="form-control" placeholder="Password" required="true" validatorMessage="Confirm Password doesn't Match Password" requiredMessage="Please Enter your Password"  />
+                                                        </span>
+                                                    </label>
+
+                                                    <label class="block clearfix">
+                                                        <span class="block input-icon input-icon-right">
+                                                            <p:password id='pwd2' value="#{backingSignup.confirmedPassword}" class="form-control" placeholder="Repeat Password" required="true" requiredMessage="Please Repeat your Password" />
+                                                        </span>
+                                                    </label>
+
+                                                    <div class="space-24"></div>
+
+                                                    <div class="clearfix">
+                                                        <button type="reset" class="width-30 pull-left btn btn-sm">
+                                                            <i class="ace-icon fa fa-refresh"></i>
+                                                            <span class="bigger-110">Reset</span>
+                                                        </button>
+                                                        <p:commandButton value="Register" actionListener="#{backingSignup.doSignup()}" class="width-65 pull-right btn btn-sm btn-success" />
+                                                    </div>
+                                                </fieldset>
+                                            </h:form>
+                                        </div><!-- /.widget-main -->
+                                        <h:form>
+                                            <div class="toolbar clearfix">
+                                                <div>
+                                                    <p:commandLink ajax="false" action="#{backingSignup.goToIndex()}" class="forgot-password-link" >
+                                                        <i class="ace-icon fa fa-arrow-left"></i>
+                                                        <h:outputText value=" Back to Home" />
+                                                    </p:commandLink>
+                                                </div>
+                                                <div>
+                                                    <div>
+                                                        <p:commandLink ajax="false" action="#{backingSignup.goToLogin()}" class="user-signup-link" >
+                                                            <h:outputText value="Login Now " />
+                                                            <i class="ace-icon fa fa-arrow-right"></i>
+                                                        </p:commandLink>
+                                                        &nbsp;&nbsp;
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </h:form>
+                                    </div><!-- /.widget-body -->
+                                </div><!-- /.login-box -->
+                                <p:spacer height="30" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </h:body>
+</html>
+

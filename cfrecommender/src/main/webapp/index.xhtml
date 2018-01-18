@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta charset="utf-8" />
+        <title>Code Forces Recommender</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <!-- bootstrap & fontawesome -->
+        <h:outputStylesheet name="css/bootstrap.css" />
+        <h:outputStylesheet name="css/font-awesome.css" />
+        <!-- text fonts -->
+        <h:outputStylesheet name="css/ace-fonts.css" />
+        <!-- ace styles -->
+        <h:outputStylesheet name="css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+        <style>
+            .jumbotron.has-background {
+                background: transparent url("#{resource['images/home-bg.jpg']}") top center no-repeat;
+                /* background source: https://pixabay.com/en/apple-steve-jobs-quotes-scrabble-758334/ */
+            }
+            .section-contact {
+                background: #222 url("#{resource['images/map-contact.jpg']}") center no-repeat;
+            }
+        </style>
+        <h:outputStylesheet name="css/frontend.css" />
+    </h:head>
+
+    <body class="no-skin pos-rel" data-spy="scroll" data-target="#menu">
+        <div id="navbar" class="navbar navbar-default navbar-fixed-top">
+            <div class="navbar-container container" id="navbar-container">
+
+                <button data-target="#menu" data-toggle="collapse" type="button" class="pull-right navbar-toggle collapsed">
+                    <span class="sr-only">Toggle menu</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <div class="navbar-header navbar-left">
+                    <a href="#top" class="navbar-brand">
+                        <small>
+                            <i class="fa fa-fort-awesome"></i>
+                            <span class="light-green">Code Forces</span> Recommender
+                        </small>
+                    </a>
+                </div>
+
+                <div class=" navbar-header navbar-right" role="navigation">
+                    <div id="menu" class="collapse navbar-collapse">
+                        <h:form>
+                            <ul class="nav navbar-nav navbar-right" role="tablist">
+                                <li>
+                                    <a href="#services">Services</a>
+                                </li>
+
+                                <li class="sep visible-md visible-lg">
+                                    <i class="ace-icon fa fa-circle white"></i>
+                                </li>
+
+                                <li>
+                                    <a href="#info">Info</a>
+                                </li>
+
+                                <li class="sep visible-md visible-lg">
+                                    <i class="ace-icon fa fa-circle white"></i>
+                                </li>
+
+                                <li>
+                                    <p:commandLink  action="#{backingIndex.goToLogin()}" ajax="false" >
+                                        <h:outputText value="Login" class="light-green"></h:outputText> <i class="fa fa-user bigger-110 light-green"></i>
+                                    </p:commandLink>
+                                </li>
+                            </ul>
+                        </h:form>
+                    </div>
+                </div>
+            </div><!-- /.navbar-container -->
+        </div>
+
+        <div class="main-container" id="top">
+            <div class="jumbotron main-background">
+
+                <p:graphicImage name="images/home-bg.jpg" class="img-main-background" />
+
+                <div class="container pos-rel">
+                    <div class="text-center">
+                        <h2 class="light-green">Welcome to First Code Forces Recommender Engine</h2>
+                        <h2 class="light-red">Just Register with your Codeforces Handle</h2>
+                        <h3 class="light-blue">We provide <span class="orange2 bigger-110">best recommendations</span> and challenges to grow up your problem solving skills</h3>
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <br />
+                        <h:form>
+                            <p:commandButton class="btn btn-purple btn-lg no-border bigger-150" value="Join Us Now" action="#{backingIndex.goToSignUp()}"  />
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+
+
+            <section id="services" class="section section-grey">
+                <div class="container">
+                    <div class="row">
+                        <div class="text-center">
+                            <h2 class="text-primary">Services</h2>
+                            <h3 class="text-muted">How can we help you?</h3>
+                        </div>
+                    </div>
+                    <div class="space-4"></div>
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <h4 class="text-info">Responsive Design</h4>
+                            <p class="text-muted align-justify">You don't need to login here with your laptop or personal computer. You can login too with your mobile to get latest updates about your training and get new problems recommendations to solve.</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                <i class="fa fa-level-up fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <h4 class="text-info">Level Up</h4>
+                            <p class="text-muted align-justify">Based on your submissions, number of solved problems and problem types, which problems you should solve to graw up your level and rank, just register with your codeforces handle.</p>
+                        </div>
+
+                        <div class="col-md-4">
+                            <span class="fa-stack fa-4x">
+                                <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                                <i class="fa fa-pie-chart fa-stack-1x fa-inverse"></i>
+                            </span>
+                            <h4 class="text-info">Data Analysis</h4>
+                            <p class="text-muted align-justify">Open your profile to get analysis about your submissions, how many accepted submission?, how many wrong answers did you submit?, which problems category you are perfect in and which one you would practice more?</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="info" class="section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-5 col-sm-6 col-lg-offset-1 text-center">
+                            <p:graphicImage alt="Section Image" name="images/dashboard.PNG" width="250" class="img-responsive inline" />
+                        </div>
+
+                        <div class="col-lg-5 col-sm-6">
+                            <h2 class="text-primary"><i class="ace-icon fa fa-dashboard orange"></i> Dashboard</h2>
+                            <div class="hr"></div>
+                            <p>
+                                Get latest updates about your performance, scheduled problems to solve, and other in your dashboard.
+                                <br />
+                                Get latest codeforces news and upcoming online contests.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="section section-grey">
+                <div class="container">
+
+                    <div class="row">
+                        <div class="col-lg-5 col-sm-6 col-lg-offset-1">
+                            <h2 class="text-primary"><i class="ace-icon fa fa-bar-chart green"></i> Statistics</h2>
+                            <div class="hr"></div>
+                            <p> Get detailed statistics about your submissions and track your self training.
+                                <br />
+                                You don't need to coach to lead your training, just use Codeforces Guide.
+                            </p>
+                        </div>
+                        <div class="col-lg-5 col-lg-offset-1 col-sm-6 text-center">
+                            <p:graphicImage alt="Section Image" width="250" name="images/stat.PNG" class="img-responsive inline" />
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <footer class="section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 text-left">
+                            <span class="bigger-150 text-muted"><span class="blue bolder">Code Forces</span> Recommender 2016</span>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <span class="action-buttons">
+                                <a href="#">
+                                    <i class="ace-icon fa fa-twitter-square light-blue bigger-200"></i>
+                                </a>
+
+                                <a href="#">
+                                    <i class="ace-icon fa fa-facebook-square text-primary bigger-200"></i>
+                                </a>
+
+                                <a href="#">
+                                    <i class="ace-icon fa fa-rss-square orange bigger-200"></i>
+                                </a>
+                            </span>
+                        </div>
+
+                        <div class="col-md-4 text-right">
+                            <a href="#" class="bigger-110">Terms of Use</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+        </div>
+
+
+        <!-- basic scripts -->
+
+        <h:outputScript name="js/jquery.js" />
+        <h:outputScript name="js/bootstrap.js" />
+        <h:outputScript name="js/holder.js" />
+        <h:outputScript name="js/indexjs.js" />
+
+    </body>
+</html>

@@ -1,0 +1,67 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingUsers.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingUsers.findMainMenueName()}" pageName="#{backingUsers.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingUsers.findPageName()}" pageIcon="#{backingUsers.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="allusers">
+                    <p:commandLink class="btn btn-xs btn-danger" immediate="true" action="#{backingUsers.updateUsers()}" update="allusers">
+                        <ezcomp:fetch-button text="Update Users" />
+                    </p:commandLink>
+                    <p:separator />
+                    <p:dataTable var="usr" reflow="true" value="#{backingUsers.findAllUsers()}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Users
+                        </f:facet>
+                        <p:column headerText="User Handle" style="width: 150px;">
+                            <h:outputText value="#{usr.userHandle}" />
+                        </p:column>
+                        <p:column headerText="User Rank" style="width: 150px;" >
+                            <h:outputText value="#{usr.userRank}" />
+                        </p:column>
+                        <p:column headerText="User Rating" style="width: 150px;">
+                            <h:outputText value="#{usr.userRating}" />
+                        </p:column>
+                        <p:column headerText="Participations" style="width: 150px;">
+                            <h:outputText value="#{usr.userNOFParticipations}" />
+                        </p:column>
+                        <p:column headerText="User Profile" style="width: 200px;" >
+                            <a href="#{usr.userProfile}" target="_blank">#{usr.userProfile}</a>
+                        </p:column>
+                    </p:dataTable>
+                    <p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+                        <f:facet name="default" />
+                        <f:facet name="start">
+                            <p:graphicImage name="/img/loading.gif" />
+                        </f:facet>
+                        <f:facet name="complete" />
+                    </p:ajaxStatus>
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" responsive="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage name="/img/loading.gif" />
+                    </p:dialog>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

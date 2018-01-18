@@ -1,0 +1,124 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingSystemPages.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingSystemPages.findMainMenueName()}" pageName="#{backingSystemPages.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingSystemPages.findPageName()}" pageIcon="#{backingSystemPages.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <center>
+                    <p:panel class="widget-box ui-sortable-handle center-block" style="min-width: 30%; max-width: 50%;">
+                        <h:form id="titles">
+                            <ui:fragment rendered="#{empty backingSystemPages.selectedPage.pageID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-plus-square"></i> Add New Page</h3>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{not empty backingSystemPages.selectedPage.pageID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-pencil-square-o"></i> Edit Existing Page</h3>
+                                </div>
+                            </ui:fragment>
+                        </h:form>
+                        <div class="space-10" />
+                        <h:form id="addnewpage" class="form-horizontal">
+                            <p:growl autoUpdate="true" />
+
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Page Name" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Page Name" style="width: 150px;" required="true" requiredMessage="Page Name is Required" value="#{backingSystemPages.selectedPage.pageMenuName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Page Icon" />
+                                <div class="col-sm-9">
+                                    <p:inputText value="#{backingSystemPages.selectedPage.iconImgeName}" style="width: 150px;" required="true" requiredMessage="Page Icon is Required" placeholder="Page Icon" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="File Name" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="File Name" style="width: 150px;" required="true" requiredMessage="File Name is Required" value="#{backingSystemPages.selectedPage.pageFileName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="File Path" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="File Path" style="width: 150px;" required="true" requiredMessage="File Path is Required" value="#{backingSystemPages.selectedPage.pagePath}" class="input-sm" />
+                                </div>
+                            </div>
+                            <center>
+                                <p:commandLink class="btn btn-primary" rendered="#{empty backingSystemPages.selectedPage.pageID}" action="#{backingSystemPages.addPage()}" update=":allpages, :addnewpage">
+                                    <ezcomp:save-button text="Add New Page" />
+                                </p:commandLink>
+                                <p:commandLink class="btn btn-primary" rendered="#{not empty backingSystemPages.selectedPage.pageID}" action="#{backingSystemPages.addPage()}" update=":allpages, :addnewpage">
+                                    <ezcomp:edit-button text="Edit Existing Page" />
+                                </p:commandLink>
+                                <h:outputText value="&#160;" />
+                                <h:outputText value="&#160;" />
+                                <p:commandLink class="btn btn-primary" immediate="true" actionListener="#{backingSystemPages.clearMe()}" update="addnewpage, titles" >
+                                    <ezcomp:clear-button text="Clear" />
+                                    <p:resetInput target="addnewpage" />
+                                </p:commandLink>
+                            </center>
+                        </h:form>
+                    </p:panel>
+                </center>
+            </div>
+        </div>
+        <p:separator />
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="allpages">
+                    <p:dataTable var="page" reflow="true" value="#{backingSystemPages.findAllPages()}"
+                                 rows="5"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All System Pages
+                        </f:facet>
+                        <p:column headerText="ID" style="width: 50px;">
+                            <h:outputText value="#{page.pageID}" />
+                        </p:column>
+                        <p:column headerText="Page Name">
+                            <h:outputText value="#{page.pageMenuName}" />
+                        </p:column>
+                        <p:column headerText="Page Icon">
+                            <h:outputText value="#{page.iconImgeName}" />
+                        </p:column>
+                        <p:column headerText="File Name">
+                            <h:outputText value="#{page.pageFileName}" />
+                        </p:column>
+                        <p:column headerText="Page Path">
+                            <h:outputText value="#{page.pagePath}" />
+                        </p:column>
+
+                        <p:column headerText="Edit" style="width: 120px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-info" update="addnewpage, titles">
+                                    <f:setPropertyActionListener target="#{backingSystemPages.selectedPage}" value="#{page}" />
+                                    <ezcomp:edit-button text="Edit Page" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

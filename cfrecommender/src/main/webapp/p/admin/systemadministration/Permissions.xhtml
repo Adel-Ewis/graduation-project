@@ -1,0 +1,106 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingPermissions.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingPermissions.findMainMenueName()}" pageName="#{backingPermissions.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingPermissions.findPageName()}" pageIcon="#{backingPermissions.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+
+            </div>
+        </div>
+        <p:separator />
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="addpermission">
+                    <p:growl autoUpdate="true" />
+                    <center>
+                        <b>
+                            <p:outputLabel value="Add New Permission" style="font-size: 24px;" />
+                        </b>
+                        <br/>
+                        <br/>
+                        <p:selectOneMenu value="#{backingPermissions.selectedPage.pageID}" requiredMessage="Please Select Page" required="true" converter="omnifaces.SelectItemsConverter" style="width:181px;">
+                            <f:selectItem itemLabel="Select Page" itemValue="" noSelectionOption="false" />
+                            <f:selectItems value="#{backingPermissions.findAllPages()}" var="p" itemLabel="#{p.pageMenuName}" itemValue="#{p.pageID}" />
+                        </p:selectOneMenu>
+                        <h:outputText value="&#160;" />
+                        <h:outputText value="&#160;" />
+                        <p:selectOneMenu value="#{backingPermissions.selectedRole.roleID}" requiredMessage="Please Select Role" required="true" converter="omnifaces.SelectItemsConverter" style="width:181px;">
+                            <f:selectItem itemLabel="Select Role" itemValue="" noSelectionOption="false" />
+                            <f:selectItems value="#{backingPermissions.findAllRoles()}" var="r" itemLabel="#{r.roleName}" itemValue="#{r.roleID}" />
+                        </p:selectOneMenu>
+                        <br/>
+                        <br/>
+                        <p:commandLink class="btn btn-primary" action="#{backingPermissions.addPermission()}" update="addpermission,allpermissions">
+                            <ezcomp:save-button text="Add New Permission" />
+                        </p:commandLink>
+                        <h:outputText value="&#160;" />
+                        <h:outputText value="&#160;" />
+                        <p:commandLink class="btn btn-primary" immediate="true" actionListener="#{backingPermissions.clearMe()}" update="addpermission" >
+                            <ezcomp:clear-button text="Clear" />
+                            <p:resetInput target="addpermission" />
+                        </p:commandLink>
+                    </center>
+
+                </h:form>
+                <p:separator />
+                <h:form id="allpermissions">
+                    <p:dataTable var="permission" reflow="true" value="#{backingPermissions.findAllPermissions()}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Pages Permissions
+                        </f:facet>
+                        <p:column headerText="Page Name">
+                            <h:outputText value="#{backingPermissions.findPageNameByPermission(permission)}" />
+                        </p:column>
+                        <p:column headerText="Role Name">
+                            <h:outputText value="#{backingPermissions.findRoleNameByPermission(permission)}" />
+                        </p:column>
+                        <p:column headerText="View Permission" style="width: 200px;">
+                            <ui:fragment rendered="#{permission.viewPermission == 1}">
+                                <center>
+                                    <i class="fa fa-eye green fa-3x"></i>
+                                </center>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{permission.viewPermission == 0}">
+                                <center>
+                                    <i class="fa fa-eye-slash red fa-3x"></i>
+                                </center>
+                            </ui:fragment>
+                        </p:column>
+
+                        <p:column headerText="Change Permission" style="width: 200px;">
+                            <center>
+                                <p:commandLink rendered="#{permission.viewPermission == 0}" update="allpermissions" class="btn btn-success btn-xs" actionListener="#{backingPermissions.changePermission(permission)}" >
+                                    <i class="ace-icon fa fa-unlock-alt"></i>
+                                    View
+                                </p:commandLink>
+                                <p:commandLink rendered="#{permission.viewPermission == 1}" update="allpermissions" class="btn btn-danger btn-xs" actionListener="#{backingPermissions.changePermission(permission)}" >
+                                    <i class="ace-icon fa fa-lock"></i>
+                                    Hide
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

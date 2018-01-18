@@ -1,0 +1,89 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingSubmissions.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingSubmissions.findMainMenueName()}" pageName="#{backingSubmissions.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingSubmissions.findPageName()}" pageIcon="#{backingSubmissions.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <h:form>
+            <div class="row">
+                <div class="col-xs-12">
+                    <center>
+                        <center>
+                            <h:panelGrid columns="1" cellpadding="15" cellspacing="15">
+                                <b>Directory to Save Submissions</b>
+                                <p:inputTextarea placeholder="Directory to Save Submissions" value="#{backingSubmissions.directoryToSaveSubmissionsFile}" />
+                            </h:panelGrid>
+                        </center>
+                        <br />
+                        <center>
+                            <p:commandLink class="btn btn-primary" actionListener="#{backingSubmissions.storeDirectories()}" >
+                                <ezcomp:save-button text="Save Directory" />
+                            </p:commandLink>
+                        </center>
+                    </center>
+                </div>
+            </div>
+        </h:form>
+        <p:separator style="clear: both;" />
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="allusers">
+                    <p:dataTable var="user" reflow="true" value="#{backingSubmissions.findAllTrainees()}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Registered Trainees
+                        </f:facet>
+                        <p:column headerText="ID" style="width: 250px;">
+                            <h:outputText value="#{user.userID}" />
+                        </p:column>
+                        <p:column headerText="User Handle">
+                            <h:outputText value="#{user.userHandle}" />
+                        </p:column>
+                        <p:column headerText="Submissions Last Update" style="width: 150px;">
+                            <center>
+                                <h:outputText value="#{user.submissionsLastUpdate}">
+                                    <f:convertDateTime pattern="MM-dd-yyyy" />
+                                </h:outputText>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Fetch Submissions" style="width: 250px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-purple" immediate="true" action="#{backingSubmissions.fetchUserSubmission(user.userHandle)}" update="allusers">
+                                    <ezcomp:fetch-button text="Fetch Submissions" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                    <p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+                        <f:facet name="default" />
+                        <f:facet name="start">
+                            <p:graphicImage name="/img/loading.gif" />
+                        </f:facet>
+                        <f:facet name="complete" />
+                    </p:ajaxStatus>
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" responsive="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage name="/img/loading.gif" />
+                    </p:dialog>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

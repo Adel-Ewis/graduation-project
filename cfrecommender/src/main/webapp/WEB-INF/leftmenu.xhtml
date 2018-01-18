@@ -1,0 +1,62 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <!-- #section:basics/sidebar -->
+    <div id="sidebar" class="sidebar                  responsive                    ace-save-state">
+        <script type="text/javascript">
+            try {
+                ace.settings.loadState('sidebar');
+            } catch (e) {
+            }
+        </script>
+        <h:form>
+            <ul class="nav nav-list">
+                <c:forEach items="#{backingLeftMenu.menuModel}" var="menu">
+                    <ui:fragment rendered="#{not empty menu.pageID and userSession.checkPermissionForPageByPageName(menu.pageID.pageFileName) eq 1}">
+                        <li class="" id="#{backingLeftMenu.checkIfPageSelected(backingLeftMenu.findPageName().trim(), menu.pageID.pageMenuName.trim()) ? 'selected-page' : menu.pageID.pageMenuName.trim()}">
+                            <p:commandLink ajax="false" action="#{backingLeftMenu.generateURL(menu.pageID.pagePath, menu.pageID.pageFileName)}" >
+                                <i class="menu-icon #{menu.pageID.iconImgeName}"></i>
+                                <span class="menu-text">#{menu.pageID.pageMenuName}</span>
+                            </p:commandLink>
+                            <b class="arrow"></b>
+                        </li>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{empty menu.pageID and userSession.doesUserHavePermissionOnMenu(menu.menuID) eq 1}">
+                        <li class="" id="#{backingLeftMenu.checkIfPageSelected(backingLeftMenu.findMainMenueName().trim(), menu.menuName) ? 'selected-menu' : sub.pageID.pageMenuName.trim()}">
+                            <a href="#" class="dropdown-toggle">
+                                <i class="menu-icon #{menu.iconImageName}"></i>
+                                <span class="menu-text">
+                                    #{menu.menuName}
+                                </span>
+                                <b class="arrow fa fa-angle-down"></b>
+                            </a>
+                            <b class="arrow"></b>
+                            <ul class="submenu">
+                                <c:forEach items="#{menu.tblsubmenuList}" var="sub">
+                                    <li class="" id="#{backingLeftMenu.checkIfPageSelected(backingLeftMenu.findPageName().trim(), sub.pageID.pageMenuName.trim()) ? 'selected-page' : sub.pageID.pageMenuName.trim()}">
+                                        <p:commandLink ajax="false" rendered="#{userSession.checkPermissionForPageByPageName(sub.pageID.pageFileName) eq 1}" action="#{backingLeftMenu.generateURL(sub.pageID.pagePath, sub.pageID.pageFileName)}" >
+                                            <i class="menu-icon #{sub.pageID.iconImgeName}"></i>
+                                            <span class="menu-text">#{sub.pageID.pageMenuName}</span>
+                                        </p:commandLink>
+                                        <b class="arrow"></b>
+                                    </li>
+                                </c:forEach>
+                            </ul>
+                        </li>
+                    </ui:fragment>
+                </c:forEach>
+            </ul><!-- /.nav-list -->
+        </h:form>
+
+
+        <!-- #section:basics/sidebar.layout.minimize -->
+        <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+            <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+        </div>
+    </div>
+
+</ui:composition>

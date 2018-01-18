@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!-- INTERFACE -->
+    <cc:interface>
+        <cc:attribute name="pageName"  />
+        <cc:attribute name="mainMenu" />
+    </cc:interface>
+
+    <!-- IMPLEMENTATION -->
+    <cc:implementation>
+        <ui:fragment rendered="#{not empty cc.attrs.mainMenu}">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-tachometer"></i>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <i class="fa fa-angle-right"></i>
+                    <li>
+                        <a href="#">#{cc.attrs.mainMenu}</a>
+                    </li>
+                    <i class="fa fa-angle-right"></i>
+                    <li class="active">#{cc.attrs.pageName}</li>
+                </ul>
+            </div>
+        </ui:fragment>
+        <ui:fragment rendered="#{empty cc.attrs.mainMenu}">
+            <div class="breadcrumbs ace-save-state" id="breadcrumbs">
+                <ul class="breadcrumb">
+                    <li>
+                        <i class="fa fa-tachometer"></i>
+                        <a href="#">Dashboard</a>
+                    </li>
+                    <i class="fa fa-angle-right"></i>
+                    <li class="active">#{cc.attrs.pageName}</li>
+                </ul>
+            </div>
+        </ui:fragment>
+    </cc:implementation>
+</html>

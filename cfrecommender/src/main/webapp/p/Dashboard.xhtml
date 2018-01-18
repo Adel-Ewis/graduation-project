@@ -1,0 +1,75 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        #{backingDashboard.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingDashboard.findMainMenueName()}" pageName="#{backingDashboard.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingDashboard.findPageName()}" pageIcon="#{backingDashboard.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="alproblems">
+                    <center>
+                        <p:commandLink class="btn btn-xs btn-success" update="alproblems" rendered="#{userSession.findCurrentUserRole() == 'T'}" action="#{dataRefresher.refreshUserData(userSession.currentUser.userHandle.userHandle, userSession.currentUser.userHandle.userID)}" immediate="true">
+                            <ezcomp:reset-button text="Refresh Your Submissions" />
+                        </p:commandLink>
+                    </center>
+                    <p:separator rendered="#{userSession.findCurrentUserRole() == 'T'}" />
+                    <p:dataTable var="prb" reflow="true" rendered="#{userSession.findCurrentUserRole() == 'T'}" value="#{userSession.recommendedProblems}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Recommended Problems
+                        </f:facet>
+                        <p:column headerText="CF-ID" style="width: 80px;">
+                            #{prb.contestID.contestCFID} - #{prb.problemIndex}
+                        </p:column>
+                        <p:column headerText="Problem">
+                            <a href="#{prb.problemURL}" target="_blank">#{prb.problemName}</a>
+                        </p:column>
+                        <p:column headerText="Similar Problems" style="width: 120px;">
+                            <center>
+                                <p:commandLink  immediate="true" ajax="false" action="#{backingDashboard.goToSimilarPage()}" >
+                                    <f:param name="problemID" value="#{prb.problemID}"/>
+                                    <i class="fa fa-sitemap blue fa-2x"></i>
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                    <div class="row">
+                        <div class="widget-box">
+                            <p:chart type="line" rendered="#{userSession.findCurrentUserRole() == 'A'}" model="#{backingDashboard.lineChart}"  style="height:400px; width: 90%;"/>
+                        </div>
+                    </div>
+                    <p:ajaxStatus style="display:block;margin-bottom:2em;height:24px;">
+                        <f:facet name="default" />
+                        <f:facet name="start">
+                            <p:graphicImage name="/img/loading.gif" />
+                        </f:facet>
+                        <f:facet name="complete" />
+                    </p:ajaxStatus>
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage name="/img/loading.gif" />
+                    </p:dialog>
+                </h:form>
+            </div>
+
+        </div>
+    </ui:define>
+
+</ui:composition>

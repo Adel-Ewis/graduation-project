@@ -1,0 +1,127 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingSystemRoles.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingSystemRoles.findMainMenueName()}" pageName="#{backingSystemRoles.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingSystemRoles.findPageName()}" pageIcon="#{backingSystemRoles.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <center>
+                    <p:panel class="widget-box ui-sortable-handle center-block" style="min-width: 30%; max-width: 50%;">
+                        <h:form id="titles">
+                            <ui:fragment rendered="#{empty backingSystemRoles.selectedRole.roleID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-plus-square"></i> Add New Role</h3>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{not empty backingSystemRoles.selectedRole.roleID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-pencil-square-o"></i> Edit Existing Role</h3>
+                                </div>
+                            </ui:fragment>
+                        </h:form>
+                        <div class="space-10" />
+                        <h:form id="addnewrole" class="form-horizontal">
+                            <p:growl autoUpdate="true" />
+
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Role Name" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Role Name" style="width: 150px;" required="true" requiredMessage="Role Name is Required" value="#{backingSystemRoles.selectedRole.roleName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Role Description" />
+                                <div class="col-sm-9">
+                                    <p:inputText value="#{backingSystemRoles.selectedRole.roleDescription}" style="width: 150px;" required="true" requiredMessage="Role Description is Required" placeholder="Role Description" class="input-sm" />
+                                </div>
+                            </div>
+                            <center>
+                                <p:commandLink class="btn btn-primary" rendered="#{empty backingSystemRoles.selectedRole.roleID}" action="#{backingSystemRoles.addRole()}" update=":allroles, :addnewrole">
+                                    <ezcomp:save-button text="Add New Role" />
+                                </p:commandLink>
+                                <p:commandLink class="btn btn-primary" rendered="#{not empty backingSystemRoles.selectedRole.roleID}" action="#{backingSystemRoles.addRole()}" update=":allroles, :addnewrole">
+                                    <ezcomp:edit-button text="Edit Existing Role" />
+                                </p:commandLink>
+                                <h:outputText value="&#160;" />
+                                <h:outputText value="&#160;" />
+                                <p:commandLink class="btn btn-primary" immediate="true" actionListener="#{backingSystemRoles.clearMe()}" update="addnewrole, titles" >
+                                    <ezcomp:clear-button text="Clear" />
+                                    <p:resetInput target="addnewrole" />
+                                </p:commandLink>
+                            </center>
+                        </h:form>
+                    </p:panel>
+                </center>
+            </div>
+        </div>
+        <p:separator />
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="allroles">
+                    <p:dataTable var="role" reflow="true" value="#{backingSystemRoles.findAllRoles()}"
+                                 rows="5"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Defined Roles
+                        </f:facet>
+                        <p:column headerText="ID" style="width: 50px;">
+                            <h:outputText value="#{role.roleID}" />
+                        </p:column>
+                        <p:column headerText="Role Name">
+                            <h:outputText value="#{role.roleName}" />
+                        </p:column>
+                        <p:column headerText="Role Description">
+                            <h:outputText value="#{role.roleDescription}" />
+                        </p:column>
+                        <p:column style="width: 180px;" headerText="Total Assigned Users">
+                            <h:outputText value="#{role.tblsystemusersList.size()}" />
+                        </p:column>
+
+                        <p:column headerText="Edit" style="width: 120px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-info" update="addnewrole, titles" >
+                                    <f:setPropertyActionListener target="#{backingSystemRoles.selectedRole}" value="#{role}" />
+                                    <ezcomp:edit-button text="Edit Role" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Authorized Pages" style="width: 150px;">
+                            <center>
+                                <p:commandLink class="btn btn-danger btn-xs" actionListener="#{backingSystemRoles.clearMe()}" update="authpages" oncomplete="PF('rolepages').show();">
+                                    <f:setPropertyActionListener target="#{backingSystemRoles.selectedRole}" value="#{role}" />
+                                    <i class="ace-icon fa fa-eye"></i>
+                                    View
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                <h:form id="authpages">
+                    <p:dialog widgetVar="rolepages" draggable="false" width="300" header="#{backingSystemRoles.selectedRole.roleName}'s Authorized Pages" modal="true" responsive="true" resizable="false">
+                        <p:dataTable var="perm" value="#{backingSystemRoles.selectedRole.tblpermissionsList}">
+                            <p:column headerText="Page Name">
+                                #{perm.tblpages.pageMenuName}
+                            </p:column>
+                        </p:dataTable>
+                    </p:dialog>
+                </h:form>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>

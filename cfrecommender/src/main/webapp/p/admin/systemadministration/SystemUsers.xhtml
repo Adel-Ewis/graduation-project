@@ -1,0 +1,202 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingSystemUsers.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingSystemUsers.findMainMenueName()}" pageName="#{backingSystemUsers.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingSystemUsers.findPageName()}" pageIcon="#{backingSystemUsers.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <center>
+                    <p:panel class="widget-box ui-sortable-handle center-block" style="min-width: 30%; max-width: 50%;">
+                        <h:form id="titles">
+                            <ui:fragment rendered="#{empty backingSystemUsers.selectedUser.systemUserID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-plus-square"></i> Add New User</h3>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{not empty backingSystemUsers.selectedUser.systemUserID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-plus-square"></i> Edit Existing User</h3>
+                                </div>
+                            </ui:fragment>
+                        </h:form>
+                        <div class="space-10" />
+                        <h:form id="addnewuser" class="form-horizontal">
+                            <p:growl autoUpdate="true" />
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Role:" />
+                                <div class="col-sm-9 dropdown dropdown-preview">
+                                    <p:selectOneMenu value="#{backingSystemUsers.selectedRole.roleID}" id="userRole" converter="omnifaces.SelectItemsConverter" class="dropdown-menu" styleClass="menu" panelStyleClass="panel" style="width:181px;">
+                                        <f:selectItem itemLabel="Select Role" itemValue="" noSelectionOption="false" />
+                                        <f:selectItems value="#{backingSystemUsers.findAllRoles()}" var="r" itemLabel="#{r.roleName}" itemValue="#{r.roleID}" />
+                                        <f:ajax render="userHandle" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Username:" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Username" value="#{backingSystemUsers.selectedUser.userName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Handle:" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="User Handle" value="#{backingSystemUsers.userHandle}" disabled="#{backingSystemUsers.selectedRole.roleID != 1}" id="userHandle" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Password:" />
+                                <div class="col-sm-9">
+                                    <p:inputText type="password" value="#{backingSystemUsers.selectedUser.password}" placeholder="Password" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User First Name:" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="First Name" value="#{backingSystemUsers.selectedUser.systemUserFirstName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Last Name:" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Last Name" value="#{backingSystemUsers.selectedUser.systemUserLastName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Email:" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Email" value="#{backingSystemUsers.selectedUser.systemUserEmail}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="User Status:" />
+                                <div class="col-sm-9">
+                                    <p:selectOneMenu value="#{backingSystemUsers.selectedUser.isActive}" converter="omnifaces.SelectItemsConverter" styleClass="menu" panelStyleClass="panel" style="width:181px;">
+                                        <f:selectItem itemLabel="Select Status" itemValue="" noSelectionOption="false" />
+                                        <f:selectItem itemLabel="Active" itemValue="1" />
+                                        <f:selectItem itemLabel="Not Active" itemValue="0" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <center>
+                                <p:commandLink class="btn btn-primary" rendered="#{empty backingSystemUsers.selectedUser.systemUserID}" action="#{backingSystemUsers.addUser()}" update=":allusers, :addnewuser">
+                                    <ezcomp:save-button text="Add New User" />
+                                </p:commandLink>
+                                <p:commandLink class="btn btn-primary" rendered="#{not empty backingSystemUsers.selectedUser.systemUserID}" action="#{backingSystemUsers.addUser()}" update=":allusers, :addnewuser">
+                                    <ezcomp:edit-button text="Edit Existing User" />
+                                </p:commandLink>
+                                <h:outputText value="&#160;" />
+                                <h:outputText value="&#160;" />
+                                <p:commandLink class="btn btn-primary" immediate="true" actionListener="#{backingSystemUsers.clearMe()}" update="addnewuser, titles" >
+                                    <ezcomp:clear-button text="Clear" />
+                                    <p:resetInput target="addnewuser" />
+                                </p:commandLink>
+                            </center>
+                        </h:form>
+                    </p:panel>
+                </center>
+            </div>
+        </div>
+        <p:separator />
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="allusers">
+                    <p:dataTable var="user" value="#{backingSystemUsers.findAllUsers()}"
+                                 rows="10"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Registered Users
+                        </f:facet>
+                        <p:column headerText="ID" style="width: 50px;">
+                            <h:outputText value="#{user.systemUserID}" />
+                        </p:column>
+                        <p:column headerText="First Name">
+                            <h:outputText value="#{user.systemUserFirstName}" />
+                        </p:column>
+                        <p:column headerText="Last Name">
+                            <h:outputText value="#{user.systemUserLastName}" />
+                        </p:column>
+                        <p:column headerText="User Name">
+                            <h:outputText value="#{user.userName}" />
+                        </p:column>
+                        <p:column headerText="User Email">
+                            <h:outputText value="#{user.systemUserEmail}" />
+                        </p:column>
+                        <p:column headerText="User Status">
+                            <center>
+                                <p:commandButton class="btn btn-success" value="Deactivate" rendered="#{user.isActive eq 1}" update="allusers" action="#{backingSystemUsers.changeUserStatus()}" >
+                                    <f:setPropertyActionListener value="#{user}" target="#{backingSystemUsers.selectedUser}" />
+                                </p:commandButton>
+                                <p:commandButton class="btn btn-danger" value="Activate" update="allusers" rendered="#{user.isActive eq 0}" action="#{backingSystemUsers.changeUserStatus()}" >
+                                    <f:setPropertyActionListener value="#{user}" target="#{backingSystemUsers.selectedUser}" />
+                                </p:commandButton>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Edit" style="width: 120px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-info" update="addnewuser, titles">
+                                    <f:setPropertyActionListener target="#{backingSystemUsers.selectedUser}" value="#{user}" />
+                                    <ezcomp:edit-button text="Edit User" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Reset Password" style="width: 150px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-grey" immediate="true" oncomplete="PF('resetPassDialog').show();" update="resetPassword">
+                                    <ezcomp:reset-button text="Reset Password" />
+                                    <f:setPropertyActionListener value="#{user}" target="#{backingSystemUsers.selectedUser}" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Delete" style="width: 120px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-danger" immediate="true" action="#{backingSystemUsers.deleteUser()}" update="allusers">
+                                    <ezcomp:delete-button text="Delete User" />
+                                    <f:setPropertyActionListener target="#{backingSystemUsers.selectedUser}" value="#{user}" />
+                                    <p:confirm header="Delete Confirmation" message="You are going to Delete User, Are you sure?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                            </center>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                            </p:confirmDialog>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+            </div>
+        </div>
+        <div class="row">
+            <h:form id="resetPassword">
+                <p:dialog header="Reset Password for #{backingSystemUsers.selectedUser.userName}" widgetVar="resetPassDialog" modal="true" height="100" resizable="false">
+                    <br />
+                    <center>
+                        <h:panelGrid columns="1">
+                            <p:inputText type="password" value="#{backingSystemUsers.resettedPassword}" placeholder="Enter New Password" class="input-sm" />
+                        </h:panelGrid>
+                        <p:spacer height="20" />
+                        <center>
+                            <p:commandButton class="btn btn-primary" value="Reset" action="#{backingSystemUsers.resetPassword()}" />
+                        </center>
+                    </center>
+                </p:dialog>
+            </h:form>
+
+        </div>
+    </ui:define>
+
+</ui:composition>

@@ -1,0 +1,53 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        #{backingRecommendedTags.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingRecommendedTags.findMainMenueName()}" pageName="#{backingRecommendedTags.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingRecommendedTags.findPageName()}" pageIcon="#{backingRecommendedTags.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="alproblems">
+                    <c:forEach var="entry" items="#{backingRecommendedTags.userProblems}">
+                        <div class="col-xs-12 col-sm-4">
+                            <div class="widget-box">
+                                <div class="widget-header">
+                                    <h4 class="widget-title">#{backingRecommendedTags.findTagName(entry.key)}</h4>
+
+                                    <div class="widget-toolbar">
+                                        <a href="#" data-action="collapse">
+                                            <i class="ace-icon fa fa-chevron-up"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <c:forEach var="prb" items="#{entry.value}" >
+                                    <div class="widget-body">
+                                        <div class="widget-main">
+                                            <div>
+                                                <a href="#{prb.problemURL}" target="_blank">#{prb.problemName}</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </div>
+                    </c:forEach>
+                </h:form>
+            </div>
+
+        </div>
+    </ui:define>
+
+</ui:composition>

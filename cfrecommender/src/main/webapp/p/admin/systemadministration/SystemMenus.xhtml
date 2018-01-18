@@ -1,0 +1,218 @@
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="/WEB-INF/template.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ezcomp="http://xmlns.jcp.org/jsf/composite/ezcomp"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="title">
+        #{backingSystemMenus.findPageName()}
+    </ui:define>
+    <ui:define name="breadcrumb">
+        <ezcomp:breadcrumb mainMenu="#{backingSystemMenus.findMainMenueName()}" pageName="#{backingSystemMenus.findPageName()}" />
+    </ui:define>
+    <ui:define name="header">
+        <ezcomp:page-header mainHeader="#{backingSystemMenus.findPageName()}" pageIcon="#{backingSystemMenus.findIconName()}" />
+    </ui:define>
+    <ui:define name="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <center>
+                    <p:panel class="widget-box ui-sortable-handle center-block" style="min-width: 30%; max-width: 50%;">
+                        <h:form id="titles">
+                            <ui:fragment rendered="#{empty backingSystemMenus.selectedMainMenu.menuID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-plus-square"></i> Add New Menu</h3>
+                                </div>
+                            </ui:fragment>
+                            <ui:fragment rendered="#{not empty backingSystemMenus.selectedMainMenu.menuID}">
+                                <div class="widget-header widget-header-large">
+                                    <h3 class="widget-title"><i class="fa fa-pencil-square-o"></i> Edit Existing Menu</h3>
+                                </div>
+                            </ui:fragment>
+                        </h:form>
+                        <div class="space-10" />
+                        <h:form id="addnewmainmenu" class="form-horizontal">
+                            <p:growl autoUpdate="true" />
+
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Menu Name" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Menu Name" style="width: 150px;" required="true" requiredMessage="Menu Name is Required" value="#{backingSystemMenus.selectedMainMenu.menuName}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Menu Icon" />
+                                <div class="col-sm-9">
+                                    <p:inputText value="#{backingSystemMenus.selectedMainMenu.iconImageName}" style="width: 150px;" required="true" requiredMessage="Menu Icon is Required" placeholder="Menu Icon" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Appearance Order" />
+                                <div class="col-sm-9">
+                                    <p:inputText placeholder="Appearance Order" style="width: 150px;" required="true" requiredMessage="Appearance Order is Required" value="#{backingSystemMenus.selectedMainMenu.appearanceOrder}" class="input-sm" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <p:outputLabel class="col-sm-3 control-label no-padding-right" value="Select Page" />
+                                <div class="col-sm-9">
+                                    <p:selectOneMenu value="#{backingSystemMenus.selectedPage.pageID}" converter="omnifaces.SelectItemsConverter" style="width:181px;">
+                                        <f:selectItem itemLabel="Select Page" itemValue="" noSelectionOption="false" />
+                                        <f:selectItems value="#{backingSystemMenus.findAllPages()}" var="p" itemLabel="#{p.pageMenuName}" itemValue="#{p.pageID}" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                            <center>
+                                <p:commandLink class="btn btn-primary" rendered="#{empty backingSystemMenus.selectedMainMenu.menuID}" action="#{backingSystemMenus.addMainMenu()}" update=":allmainmenus, :addnewmainmenu">
+                                    <ezcomp:save-button text="Add New Main Menu" />
+                                </p:commandLink>
+                                <p:commandLink class="btn btn-primary" rendered="#{not empty backingSystemMenus.selectedMainMenu.menuID}" action="#{backingSystemMenus.addMainMenu()}" update=":allmainmenus, :addnewmainmenu">
+                                    <ezcomp:edit-button text="Edit Existing Main Menu" />
+                                </p:commandLink>
+                                <h:outputText value="&#160;" />
+                                <h:outputText value="&#160;" />
+                                <p:commandLink class="btn btn-primary" immediate="true" actionListener="#{backingSystemMenus.clearMe()}" update="addnewmainmenu, titles" >
+                                    <ezcomp:clear-button text="Clear" />
+                                    <p:resetInput target="addnewmainmenu" />
+                                </p:commandLink>
+                            </center>
+                        </h:form>
+                    </p:panel>
+                </center>
+            </div>
+        </div>
+        <p:separator />
+        <div class="row">
+            <div class="col-xs-12">
+                <h:form id="allmainmenus">
+                    <p:dataTable var="mainMenu" reflow="true" value="#{backingSystemMenus.findAllMainMenus()}"
+                                 rows="5"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 rowsPerPageTemplate="5,10,15">
+                        <f:facet name="header">
+                            All Main Menus
+                        </f:facet>
+                        <p:column headerText="ID" style="width: 50px;">
+                            <h:outputText value="#{mainMenu.menuID}" />
+                        </p:column>
+                        <p:column headerText="Menu Name">
+                            <h:outputText value="#{mainMenu.menuName}" />
+                        </p:column>
+                        <p:column headerText="Menu Icon">
+                            <h:outputText value="#{mainMenu.iconImageName}" />
+                        </p:column>
+                        <p:column headerText="Appearance Order">
+                            <h:outputText value="#{mainMenu.appearanceOrder}" />
+                        </p:column>
+                        <p:column headerText="Edit" style="width: 180px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-info" update="addnewmainmenu, titles">
+                                    <f:setPropertyActionListener target="#{backingSystemMenus.selectedMainMenu}" value="#{mainMenu}" />
+                                    <ezcomp:edit-button text="Edit Main Menu" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Add Sub-Menu" style="width: 180px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-success" disabled="#{mainMenu.pageID != null}" update="addsubmenu" onclick="PF('add-submenu').show();" >
+                                    <f:setPropertyActionListener target="#{backingSystemMenus.selectedMainMenu}" value="#{mainMenu}" />
+                                    <ezcomp:extra-plus text="Add Sub-Menu" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Sub-Menus" style="width: 180px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-grey" disabled="#{mainMenu.pageID != null}" update="subs" onclick="PF('sub-menus').show();" >
+                                    <f:setPropertyActionListener target="#{backingSystemMenus.selectedMainMenu}" value="#{mainMenu}" />
+                                    <ezcomp:sub-menus text="View Sub-Menus" />
+                                </p:commandLink>
+                            </center>
+                        </p:column>
+                        <p:column headerText="Delete" style="width: 150px;">
+                            <center>
+                                <p:commandLink class="btn btn-xs btn-danger" actionListener="#{backingSystemMenus.deleteMainMenu(mainMenu)}" update="allmainmenus" >
+                                    <ezcomp:delete-button text="Delete" />
+                                    <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                </p:commandLink>
+                                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
+                            </center>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                <p:dialog widgetVar="sub-menus" dynamic="true" position="center" minWidth="300" width="600" modal="true" responsive="true" resizable="false">
+                    <h:form id="subs">
+                        <p:dataTable var="submenu" value="#{backingSystemMenus.selectedMainMenu.tblsubmenuList}">
+                            <f:facet name="header">
+                                #{backingSystemMenus.selectedMainMenu.menuName}'s Sub-Menus
+                            </f:facet>
+                            <p:column priority="1" headerText="Page Name">
+                                #{submenu.pageID.pageMenuName}
+                            </p:column>
+                            <p:column priority="2" headerText="Visible">
+                                <ui:fragment rendered="#{submenu.visible == 1}">
+                                    <center>
+                                        <i class="fa fa-eye green fa-3x"></i>
+                                    </center>
+                                </ui:fragment>
+                                <ui:fragment rendered="#{submenu.visible == 0}">
+                                    <center>
+                                        <i class="fa fa-eye-slash red fa-3x"></i>
+                                    </center>
+                                </ui:fragment>
+                            </p:column>
+                            <p:column priority="2" headerText="Change">
+                                <center>
+                                    <p:commandLink rendered="#{submenu.visible == 0}" update="subs" class="btn btn-success btn-xs" oncomplete="PF('sub-menus').show();" actionListener="#{backingSystemMenus.changeVisibility(submenu)}" >
+                                        <i class="ace-icon fa fa-unlock-alt"></i>
+                                        View
+                                    </p:commandLink>
+                                    <p:commandLink rendered="#{submenu.visible == 1}" update="subs" class="btn btn-danger btn-xs" oncomplete="PF('sub-menus').show();" actionListener="#{backingSystemMenus.changeVisibility(submenu)}" >
+                                        <i class="ace-icon fa fa-lock"></i>
+                                        Hide
+                                    </p:commandLink>
+                                </center>
+                            </p:column>
+                            <p:column priority="3" headerText="Delete">
+                                <center>
+                                    <p:commandLink class="btn btn-xs btn-danger" actionListener="#{backingSystemMenus.deleteSubMenu(submenu)}" update="subs" oncomplete="PF('sub-menus').show();">
+                                        <ezcomp:delete-button text="Delete" />
+                                        <p:confirm header="Confirmation" message="Are you sure?" icon="ui-icon-alert" />
+                                    </p:commandLink>
+                                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                    </p:confirmDialog>
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+                <p:dialog widgetVar="add-submenu" dynamic="true" header="Add New Sub-Menu" position="center" minWidth="300" width="600" modal="true" responsive="true" resizable="false">
+                    <h:form id="addsubmenu" >
+                        <p:dataTable var="pagetoselect" reflow="true" value="#{backingSystemMenus.findPagesNotInMenu(backingSystemMenus.selectedMainMenu)}">
+                            <f:facet name="header">
+                                Select Page to Add as a Sub-Menu Under #{backingSystemMenus.selectedMainMenu.menuName} Menu
+                            </f:facet>
+                            <p:column  headerText="Page Name">
+                                #{pagetoselect.pageMenuName}
+                            </p:column>
+                            <p:column headerText="Select">
+                                <center>
+                                    <p:commandLink actionListener="#{backingSystemMenus.addSubMenu(pagetoselect)}" update="addsubmenu" oncomplete="PF('add-submenu').hide();" >
+                                        <i class="fa fa-plus-circle green fa-3x"></i>
+                                    </p:commandLink>
+                                </center>
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                </p:dialog>
+            </div>
+        </div>
+    </ui:define>
+
+</ui:composition>
